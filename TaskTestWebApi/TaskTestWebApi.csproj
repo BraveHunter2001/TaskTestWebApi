@@ -13,10 +13,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Data\Configuration\" />
     <Folder Include="Models\" />
     <Folder Include="Utility\" />
-    <Folder Include="Validation\" />
   </ItemGroup>
 
 </Project>
