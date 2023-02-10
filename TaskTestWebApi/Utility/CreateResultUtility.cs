@@ -22,7 +22,7 @@ public static class CreateResultUtility
 
     private static int CalculateTotalTime(List<Value> samples)
     {
-        int totalTime = 0;
+       
         int[] times = samples.Select(s => s.Time).ToArray();
 
         return times.Max() - times.Min();
