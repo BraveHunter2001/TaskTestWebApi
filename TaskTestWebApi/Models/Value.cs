@@ -12,4 +12,5 @@ public class Value
     public int Time { get; set; }
     [Range(0, float.MaxValue)]
     public float Indicator { get; set; }
+    public string Namefile { get; set; }  
 }

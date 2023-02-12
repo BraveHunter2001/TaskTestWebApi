@@ -1,9 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using TaskTestWebApi.Data;
+using TaskTestWebApi.Data.Repositories;
+using TaskTestWebApi.Models;
 using TaskTestWebApi.Utility.Parser;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+{
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("postgresDB"));
+});
+
 builder.Services.AddTransient<IParser, CsvParser>();
+builder.Services.AddScoped<IRepository<Value>, ValueRepository>();
+builder.Services.AddScoped<IRepository<Result>, ResultRepository>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -16,6 +28,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.EnsureCreated();
 }
 
 app.UseHttpsRedirection();

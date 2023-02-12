@@ -7,11 +7,12 @@ namespace TaskTestWebApi.Data
     {
         public DbSet<Value> Values { get; set; }
         public DbSet<Result> Results { get; set; }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> option) : base(option) { }
-        
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> option) : base(option)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             base.OnModelCreating(builder);
         }
     }

@@ -44,6 +44,7 @@ namespace TaskTestWebApi.Data.Repositories
             oldValue.Date = item.Date;
             oldValue.Time = item.Time;
             oldValue.Indicator = item.Indicator;
+            oldValue.Namefile = item.Namefile;
         }
 
         protected virtual void Dispose(bool disposing)
