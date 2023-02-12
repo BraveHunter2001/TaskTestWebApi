@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TaskTestWebApi.Commons.Mappings;
 using TaskTestWebApi.Data;
 using TaskTestWebApi.Data.Repositories;
 using TaskTestWebApi.Models;
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("postgresDB"));
 });
 
+builder.Services.AddAutoMapper(typeof(MappingProfiler));
 builder.Services.AddTransient<IParser, CsvParser>();
 builder.Services.AddScoped<IRepository<Value>, ValueRepository>();
 builder.Services.AddScoped<IRepository<Result>, ResultRepository>();

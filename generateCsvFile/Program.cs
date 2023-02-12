@@ -1,25 +1,26 @@
 ﻿using CsvHelper;
-using Models;
+using TaskTestWebApi.Models;
 using System.Globalization;
 
-const int countValue = 1000;
+const int countValue = 10000;
 const int maxTimes = 10000;
 
 Random random = new Random();
 
-List<Value> values = new List<Value>();
+List<ValueDTO> values = new List<ValueDTO>();
 
 for(int i = 0; i < countValue; i++)
 {
     values.Add(
-        new Value {
+        new ValueDTO
+        {
             Date= GetDateTime(random),
             Time = random.Next(0, maxTimes),
             Indicator = (float)random.NextDouble(),
         });
 }
 
-using (StreamWriter streamWriter = new StreamWriter("test.csv"))
+using (StreamWriter streamWriter = new StreamWriter($"test_{countValue}.csv",true))
 {
     using(CsvWriter cw = new CsvWriter(streamWriter, CultureInfo.CurrentCulture))
     {
