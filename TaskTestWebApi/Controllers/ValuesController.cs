@@ -14,7 +14,7 @@ namespace TaskTestWebApi.Controllers
         private readonly IRepository<Value> _valueRepo;
         private readonly IRepository<Result> _resultRepo;
         private readonly IMapper _mapper;
-        
+
         public ValuesController(
             IParser parser,
             IRepository<Value> valueRepo,
@@ -27,31 +27,46 @@ namespace TaskTestWebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost] 
+        [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
-            List<ValueDTO> valuesDto = new List<ValueDTO>();
-
-            valuesDto = _parserValue.GetRecords<ValueDTO>(file).ToList();
-
-            valuesDto.ForEach((valueDto) =>
+            if (file == null)
             {
-                Value val = _mapper.Map<Value>(valueDto);
-                val.Namefile = file.FileName;
-                _valueRepo.Add(val);
-            });
-            _valueRepo.Save();
-            
-            var res = CreateResultUtility.CalculateBySamples(valuesDto);
-            Result result = _mapper.Map<Result>(res);
-            result.NameFile = file.FileName;
-            _resultRepo.Add(result);
-            _resultRepo.Save();
+                return BadRequest("File was empty");
+            }
 
-            return Ok(res);
-            
+            List<ValueDTO> valuesDto = _parserValue.GetRecords<ValueDTO>(file).ToList();
+            ResultDTO resultsDto = CreateResultUtility.CalculateBySamples(valuesDto);
+
+            List<Value> values = _mapper.Map<List<Value>>(valuesDto);
+            values.ForEach(value => { value.Namefile = file.FileName; });
+
+            Result result = _mapper.Map<Result>(resultsDto);
+            result.NameFile = file.FileName;
+
+
+            if (_resultRepo.GetItems().Any(result => result.NameFile == file.FileName))
+            {
+                var valuesToDelete = _valueRepo.GetItems().Where(value => value.Namefile == file.FileName);
+                foreach (var value in valuesToDelete)
+                {
+                    _valueRepo.Delete(value);
+                }
+
+                var resultToDelete = _resultRepo.GetItems().FirstOrDefault(res=> res.NameFile == file.FileName);
+                _resultRepo.Delete(resultToDelete);
+            }
+
+            values.ForEach(values => { _resultRepo.Add(result); });
+            _resultRepo.Add(result);
+
+
+            _valueRepo.Save();
+            _resultRepo.Save();
+            return Ok(resultsDto);
+
         }
 
-       
+
     }
 }

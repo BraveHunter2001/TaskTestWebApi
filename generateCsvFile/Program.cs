@@ -2,8 +2,8 @@
 using TaskTestWebApi.Models;
 using System.Globalization;
 
-const int countValue = 10000;
-const int maxTimes = 10000;
+int countValue = int.Parse(Console.ReadLine());
+const int maxTimes = 1000;
 
 Random random = new Random();
 
@@ -20,7 +20,7 @@ for(int i = 0; i < countValue; i++)
         });
 }
 
-using (StreamWriter streamWriter = new StreamWriter($"test_{countValue}.csv",true))
+using (StreamWriter streamWriter = new StreamWriter($"test_{countValue}.csv"))
 {
     using(CsvWriter cw = new CsvWriter(streamWriter, CultureInfo.CurrentCulture))
     {

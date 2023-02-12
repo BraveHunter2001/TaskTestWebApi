@@ -29,8 +29,10 @@ namespace TaskTestWebApi.Utility.Parser
             {
                 if (disposing)
                 {
-                    _stream.Dispose();
-                    _csvReader.Dispose();
+                    if(_stream != null)
+                        _stream.Dispose();
+                    if(_csvReader!= null)
+                        _csvReader.Dispose();
                 }
 
                 disposedValue = true;
