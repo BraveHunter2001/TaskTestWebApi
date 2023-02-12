@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models;
+using TaskTestWebApi.Models;
 using IParser = TaskTestWebApi.Utility.Parser.IParser;
 
 namespace TaskTestWebApi.Controllers
@@ -18,11 +18,11 @@ namespace TaskTestWebApi.Controllers
         [HttpPost] 
         public IActionResult UploadFile(IFormFile file)
         {
-            List<Value> values = new List<Value>();
+            List<ValueDTO> values = new List<ValueDTO>();
 
-            values = _parserValue.GetRecords<Value>(file).ToList();
+            values = _parserValue.GetRecords<ValueDTO>(file).ToList();
 
-            var res = CreateResultUtility.CalculateBySamples(file.FileName, values);
+            var res = CreateResultUtility.CalculateBySamples(values);
 
             return Ok(res);
             

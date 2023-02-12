@@ -1,12 +1,11 @@
-using Models;
+using TaskTestWebApi.Models;
 
 public static class CreateResultUtility
 {
-    public static Result CalculateBySamples(string nameFile, List<Value> samples)
+    public static ResultDTO CalculateBySamples(List<ValueDTO> samples)
     {
-        Result value = new Result
+        ResultDTO value = new ResultDTO
         {
-            NameFile = nameFile,
             TotalTime = CalculateTotalTime(samples),
             MinimalDate = samples.Min(sample => sample.Date),
             AverageTime = (float)samples.Average(samples => samples.Time),
@@ -19,16 +18,14 @@ public static class CreateResultUtility
 
         return value;
     }
-
-    private static int CalculateTotalTime(List<Value> samples)
+    private static int CalculateTotalTime(List<ValueDTO> samples)
     {
        
         int[] times = samples.Select(s => s.Time).ToArray();
 
         return times.Max() - times.Min();
     }
-
-    private static float CalculateMedian(List<Value> samples)
+    private static float CalculateMedian(List<ValueDTO> samples)
     {
         float[] indicator = samples.Select(s => s.Indicator).ToArray();
 

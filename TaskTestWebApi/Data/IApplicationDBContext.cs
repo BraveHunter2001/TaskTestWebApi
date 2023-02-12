@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Models;
+using TaskTestWebApi.Models;
 
 public interface IApplicationDBContext  
 {

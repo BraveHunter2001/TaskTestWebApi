@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace TaskTestWebApi.Models;
-public class Result
+public class ResultDTO
 {
-    public Guid Id { get; set; }
-    public string NameFile { get; set; }
     public int TotalTime { get; set; }
     public DateTime MinimalDate { get; set; }
     public float AverageTime { get; set; }
