@@ -1,10 +1,6 @@
-﻿using CsvHelper;
-using CsvHelper.TypeConversion;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models;
-using System.Globalization;
+using IParser = TaskTestWebApi.Utility.Parser.IParser;
 
 namespace TaskTestWebApi.Controllers
 {
@@ -12,21 +8,23 @@ namespace TaskTestWebApi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IParser _parserValue;
+
+        public ValuesController(IParser parserValue)
+        {
+            _parserValue= parserValue;
+        }
 
         [HttpPost] 
         public IActionResult UploadFile(IFormFile file)
         {
             List<Value> values = new List<Value>();
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                using (var csvReader = new CsvReader(reader, CultureInfo.CurrentCulture))
-                {
-                
-                    values = csvReader.GetRecords<Value>().ToList();
-                }
-            }
 
-            return Ok(values);
+            values = _parserValue.GetRecords<Value>(file).ToList();
+
+            var res = CreateResultUtility.CalculateBySamples(file.FileName, values);
+
+            return Ok(res);
             
         }
 
