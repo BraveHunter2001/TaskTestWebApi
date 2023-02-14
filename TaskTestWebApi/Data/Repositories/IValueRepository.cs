@@ -4,7 +4,7 @@ namespace TaskTestWebApi.Data.Repositories;
 public interface IValueRepository : IDisposable 
 {
     IEnumerable<Value> GetItems();
-    IEnumerable<Value> GetItemsByName(string name);
+    IEnumerable<Value> GetItemsByNameFile(string name);
     Value GetItem(int id);
     void Add(Value value);
     void Delete(int id);

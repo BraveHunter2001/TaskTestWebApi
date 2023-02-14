@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 builder.Services.AddAutoMapper(typeof(MappingProfiler));
 builder.Services.AddTransient<IParser, CsvParser>();
 builder.Services.AddScoped<IValueRepository, ValueRepository>();
-builder.Services.AddScoped<IRepository<Result>, ResultRepository>();
+builder.Services.AddScoped<IResultRepository, ResultRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

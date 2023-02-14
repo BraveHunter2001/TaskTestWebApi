@@ -1,35 +1,31 @@
-﻿using TaskTestWebApi.Models;
+﻿using System.Xml.Linq;
+using TaskTestWebApi.Models;
 
 namespace TaskTestWebApi.Data.Repositories
 {
-    public class ResultRepository :IRepository<Result>
+    public class ResultRepository :IResultRepository
     {
         private readonly ApplicationDbContext _dbContext;
         private bool disposedValue;
 
         public ResultRepository(ApplicationDbContext context) => _dbContext = context;
-
         public void Add(Result item)
         {
             _dbContext.Results.Add(item);
         }
-
         public void Delete(int id)
         {
             Result value = _dbContext.Results.Find(id);
             Delete(value);
         }
-
         public void Delete(Result item)
         {
             _dbContext.Results.Remove(item);
         }
-
         public Result GetItem(int id)
         {
             return _dbContext.Results.Find(id);
         }
-
         public IEnumerable<Result> GetItems()
         {
             return _dbContext.Results.ToList();
@@ -69,6 +65,30 @@ namespace TaskTestWebApi.Data.Repositories
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public Result GetItemByNameFile(string name)
+        {
+            var results = _dbContext.Results.Find(name);
+            return results;
+        }
+
+        public IEnumerable<Result> GetItemsByMinimalDateBetween(DateTime from, DateTime to)
+        {
+            var results = _dbContext.Results.Where(res => res.MinimalDate >=from || res.MinimalDate <= to);
+            return results;
+        }
+
+        public IEnumerable<Result> GetItemsByAverageIndicatorBetween(float from, float to)
+        {
+            var results = _dbContext.Results.Where(res => res.AverageIndicator >= from || res.AverageIndicator <= to);
+            return results;
+        }
+
+        public IEnumerable<Result> GetItemsByAverageTimeBetween(float from, float to)
+        {
+            var results = _dbContext.Results.Where(res => res.AverageTime >= from || res.AverageTime <= to);
+            return results;
         }
     }
 }

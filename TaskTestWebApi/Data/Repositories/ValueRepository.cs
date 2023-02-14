@@ -33,7 +33,7 @@ namespace TaskTestWebApi.Data.Repositories
             return _dbContext.Values.ToList();
         }
 
-        public IEnumerable<Value> GetItemsByName(string name)
+        public IEnumerable<Value> GetItemsByNameFile(string name)
         {
            var values  = _dbContext.Values.Where(value=> value.Namefile== name);
            return values;
