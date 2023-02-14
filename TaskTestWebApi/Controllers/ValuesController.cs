@@ -12,13 +12,13 @@ namespace TaskTestWebApi.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly IParser _parserValue;
-        private readonly IRepository<Value> _valueRepo;
+        private readonly IValueRepository _valueRepo;
         private readonly IRepository<Result> _resultRepo;
         private readonly IMapper _mapper;
 
         public ValuesController(
             IParser parser,
-            IRepository<Value> valueRepo,
+            IValueRepository valueRepo,
             IRepository<Result> resultRepo,
             IMapper mapper)
         {
@@ -48,7 +48,7 @@ namespace TaskTestWebApi.Controllers
 
             if (_resultRepo.GetItems().Any(result => result.NameFile == file.FileName))
             {
-                var valuesToDelete = _valueRepo.GetItems().Where(value => value.Namefile == file.FileName);
+                var valuesToDelete = _valueRepo.GetItemsByName(file.FileName);
                 foreach (var value in valuesToDelete)
                 {
                     _valueRepo.Delete(value);
@@ -58,7 +58,7 @@ namespace TaskTestWebApi.Controllers
                 _resultRepo.Delete(resultToDelete);
             }
 
-            values.ForEach(values => { _resultRepo.Add(result); });
+            values.ForEach(values => { _valueRepo.Add(values); });
             _resultRepo.Add(result);
 
 

@@ -2,7 +2,7 @@
 
 namespace TaskTestWebApi.Data.Repositories
 {
-    public class ValueRepository : IRepository<Value>
+    public class ValueRepository : IValueRepository
     {
         private readonly ApplicationDbContext _dbContext;
         private bool disposedValue;
@@ -31,6 +31,12 @@ namespace TaskTestWebApi.Data.Repositories
         public IEnumerable<Value> GetItems()
         {
             return _dbContext.Values.ToList();
+        }
+
+        public IEnumerable<Value> GetItemsByName(string name)
+        {
+           var values  = _dbContext.Values.Where(value=> value.Namefile== name);
+           return values;
         }
 
         public void Save()
@@ -65,5 +71,7 @@ namespace TaskTestWebApi.Data.Repositories
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+       
     }
 }

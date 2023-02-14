@@ -15,7 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfiler));
 builder.Services.AddTransient<IParser, CsvParser>();
-builder.Services.AddScoped<IRepository<Value>, ValueRepository>();
+builder.Services.AddScoped<IValueRepository, ValueRepository>();
 builder.Services.AddScoped<IRepository<Result>, ResultRepository>();
 
 builder.Services.AddControllers();
