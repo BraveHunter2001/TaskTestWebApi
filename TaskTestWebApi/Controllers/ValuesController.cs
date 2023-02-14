@@ -7,6 +7,7 @@ using IParser = TaskTestWebApi.Utility.Parser.IParser;
 namespace TaskTestWebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
@@ -68,5 +69,16 @@ namespace TaskTestWebApi.Controllers
         }
 
 
+        [HttpGet]
+        [Route("{stringName}")]
+        public ActionResult<List<ValueDTO>> GetValuesByName(string stringName)
+        {
+            List<Value> results = _valueRepo.GetItems().Where(res => res.Namefile ==stringName).ToList();
+
+            var valuedto = _mapper.Map<List<ValueDTO>>(results);
+
+            return Ok(valuedto);
+        }
     }
 }
+
