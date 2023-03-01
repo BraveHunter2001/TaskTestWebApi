@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskTestWebApi.Data.Repositories;
 using TaskTestWebApi.Models;
+using TaskTestWebApi.Services;
 using IParser = TaskTestWebApi.Utility.Parser.IParser;
 
 namespace TaskTestWebApi.Controllers
@@ -37,35 +38,19 @@ namespace TaskTestWebApi.Controllers
             }
 
             List<ValueDTO> valuesDto = _parserValue.GetRecords<ValueDTO>(file).ToList();
-            ResultDTO resultsDto = CreateResultUtility.CalculateBySamples(valuesDto);
-            resultsDto.NameFile= file.FileName;
 
-            List<Value> values = _mapper.Map<List<Value>>(valuesDto);
-            values.ForEach(value => { value.Namefile = file.FileName; });
-
-            Result result = _mapper.Map<Result>(resultsDto);
-            result.NameFile = file.FileName;
-
-            var resultByName = _resultRepo.GetItemByNameFile(file.FileName);
-
-            if (resultByName != null)
-            {
-                var valuesToDelete = _valueRepo.GetItemsByNameFile(file.FileName);
-                foreach (var value in valuesToDelete)
-                {
-                    _valueRepo.Delete(value);
-                }
-
-                _resultRepo.Delete(resultByName);
+            if(valuesDto.Count < 0) {
+                return BadRequest("There are no entries in the file.");
             }
 
-            values.ForEach(values => { _valueRepo.Add(values); });
-            _resultRepo.Add(result);
+            if(valuesDto.Count > 10000)
+                return BadRequest("The file cannot contain more than 10,000 entries.");
 
 
-            _valueRepo.Save();
-            _resultRepo.Save();
-            return Ok(resultsDto);
+            UploadValuesService uploadValues = new UploadValuesService(_mapper, _valueRepo, _resultRepo);
+            uploadValues.UploadValues(valuesDto, file.FileName);
+
+            return Ok();
 
         }
 

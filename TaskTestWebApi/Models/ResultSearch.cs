@@ -11,6 +11,6 @@ public class ResultSearch
 
 public class RangeDataSearch<T> where T: struct
 {
-    public T? LowerLimit { get; set; }
-    public T? UpperLimit { get; set; }
+    public T LowerLimit { get; set; }
+    public T UpperLimit { get; set; }
 }
