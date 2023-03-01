@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskTestWebApi.Data.Repositories;
 using TaskTestWebApi.Models;
@@ -18,48 +17,43 @@ namespace TaskTestWebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        [Route("search/{namefile}")]
-        public ActionResult<ResultDTO> SearchByName(string namefile)
+        [HttpPost]
+        public ActionResult<List<ResultDTO>> SearchResult(ResultSearch resultSearchModel)
         {
-            Result results = _resultRepo.GetItemByNameFile(namefile);
+            var result = _resultRepo.GetItems();
 
-            var resultdto = _mapper.Map<ResultDTO>(results);
+            if (resultSearchModel != null)
+            {
+                if (!string.IsNullOrEmpty(resultSearchModel.NameFile))
+                {
+                    result = result.Where(res => res.NameFile == resultSearchModel.NameFile);
+                }
+                if (resultSearchModel.MinimalDateRange != null)
+                {
+                    result = result.Where(res => 
+                        res.MinimalDate >= resultSearchModel.MinimalDateRange.LowerLimit &&
+                        res.MinimalDate <= resultSearchModel.MinimalDateRange.UpperLimit
+                    );
+                }
+                if (resultSearchModel.AverageIndicatorRange != null)
+                {
+                    result = result.Where(res =>
+                        res.AverageIndicator >= resultSearchModel.AverageIndicatorRange.LowerLimit &&
+                        res.AverageIndicator <= resultSearchModel.AverageIndicatorRange.UpperLimit
+                    );
+                }
 
-            return Ok(resultdto);
-        }
+                if (resultSearchModel.AverageTimeRange != null)
+                {
+                    result = result.Where(res =>
+                        res.AverageTime >= resultSearchModel.AverageTimeRange.LowerLimit &&
+                        res.AverageTime <= resultSearchModel.AverageTimeRange.UpperLimit
+                    );
+                }
+            }
 
-        [HttpGet]
-        [Route("search/MinimalDate/from={from}&to={to}")]
-        public ActionResult<List<ResultDTO>> SearchByDatetime(DateTime from, DateTime to)
-        {
-            List<Result> results = _resultRepo.GetItemsByMinimalDateBetween(from,to).ToList();
-
-            var resultdto = _mapper.Map<List<ResultDTO>>(results);
-
-            return Ok(resultdto);
-        }
-
-        [HttpGet]
-        [Route("search/AverageIndicator/from={from}&to={to}")]
-        public ActionResult<List<ResultDTO>> SearchByAverageInd(float from, float to)
-        {
-            List<Result> results = _resultRepo.GetItemsByAverageIndicatorBetween(from,to).ToList();
-
-            var resultdto = _mapper.Map<List<ResultDTO>>(results);
-
-            return Ok(resultdto);
-        }
-
-        [HttpGet]
-        [Route("search/AverageTime/from={from}&to={to}")]
-        public ActionResult<List<ResultDTO>> SearchByAverageTime(float from, float to)
-        {
-            List<Result> results = _resultRepo.GetItemsByAverageTimeBetween(from,to).ToList();
-
-            var resultdto = _mapper.Map<List<ResultDTO>>(results);
-
-            return Ok(resultdto);
+            var resDto = _mapper.Map<List<ResultDTO>>(result.ToList());
+            return resDto;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace TaskTestWebApi.Controllers
 
             List<ValueDTO> valuesDto = _parserValue.GetRecords<ValueDTO>(file).ToList();
             ResultDTO resultsDto = CreateResultUtility.CalculateBySamples(valuesDto);
+            resultsDto.NameFile= file.FileName;
 
             List<Value> values = _mapper.Map<List<Value>>(valuesDto);
             values.ForEach(value => { value.Namefile = file.FileName; });
@@ -45,8 +46,9 @@ namespace TaskTestWebApi.Controllers
             Result result = _mapper.Map<Result>(resultsDto);
             result.NameFile = file.FileName;
 
+            var resultByName = _resultRepo.GetItemByNameFile(file.FileName);
 
-            if (_resultRepo.GetItemByNameFile(file.Name) != null)
+            if (resultByName != null)
             {
                 var valuesToDelete = _valueRepo.GetItemsByNameFile(file.FileName);
                 foreach (var value in valuesToDelete)
@@ -54,8 +56,7 @@ namespace TaskTestWebApi.Controllers
                     _valueRepo.Delete(value);
                 }
 
-                var resultToDelete = _resultRepo.GetItemByNameFile(file.Name);
-                _resultRepo.Delete(resultToDelete);
+                _resultRepo.Delete(resultByName);
             }
 
             values.ForEach(values => { _valueRepo.Add(values); });
@@ -68,12 +69,11 @@ namespace TaskTestWebApi.Controllers
 
         }
 
-
         [HttpGet]
         [Route("{stringName}")]
         public ActionResult<List<ValueDTO>> GetValuesByName(string stringName)
         {
-            List<Value> results = _valueRepo.GetItems().Where(res => res.Namefile ==stringName).ToList();
+            List<Value> results = _valueRepo.GetItems().Where(res => res.Namefile == stringName).ToList();
 
             var valuedto = _mapper.Map<List<ValueDTO>>(results);
 

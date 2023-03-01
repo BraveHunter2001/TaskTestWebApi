@@ -12,5 +12,6 @@ public class ResultDTO
     public float MaximumIndicator { get; set; }
     [Range(1, 10000)]
     public int CountRow { get; set; }
+    public string NameFile { get; set; }
 }
 

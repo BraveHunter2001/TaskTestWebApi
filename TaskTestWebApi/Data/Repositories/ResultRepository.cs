@@ -69,7 +69,8 @@ namespace TaskTestWebApi.Data.Repositories
 
         public Result GetItemByNameFile(string name)
         {
-            var results = _dbContext.Results.Find(name);
+            var results = _dbContext.Results.FirstOrDefault(res=>res.NameFile == name);
+
             return results;
         }
 
